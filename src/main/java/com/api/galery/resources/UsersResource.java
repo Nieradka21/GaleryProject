@@ -3,6 +3,9 @@ package com.api.galery.resources;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,9 +36,8 @@ public class UsersResource {
 	UsersRepository usersRepository;
 
 	@GetMapping("/users")
-	public List<Users> listaDeUsuarios() {
-
-		return usersRepository.findAll();
+	public ResponseEntity<?> listaDeUsuarios(Pageable pageable) {
+		return new ResponseEntity<>(usersRepository.findAll(pageable),HttpStatus.OK);
 	}
 
 	@PostMapping("/user")
@@ -55,7 +57,7 @@ public class UsersResource {
 	public Users deletarUsuario(@PathVariable(value = "id") long id) {
 		return usersRepository.deleteById(id);
 	}
-	
+
 	@PostMapping("/login")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response loginAutenticar(@RequestBody String t) {
