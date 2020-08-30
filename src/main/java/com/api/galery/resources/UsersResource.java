@@ -1,11 +1,8 @@
 package com.api.galery.resources;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,11 +12,13 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import javax.servlet.http.HttpServletRequest;
+
+import java.util.List;
+
 import javax.validation.Valid;
-import javax.ws.rs.PUT;
+
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
+
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -36,8 +35,13 @@ public class UsersResource {
 	UsersRepository usersRepository;
 
 	@GetMapping("/users")
-	public ResponseEntity<?> listaDeUsuarios(Pageable pageable) {
-		return new ResponseEntity<>(usersRepository.findAll(pageable),HttpStatus.OK);
+	public Page<Users> listaDeUsuarios(Pageable pageable) {
+		return usersRepository.findAll(pageable);
+	}
+
+	@GetMapping("/users/{name}")
+	public Page<Users> buscarUsuario(@PathVariable(value = "name") String name, Pageable pageable) {
+		return usersRepository.findByNameContaining(name, pageable);
 	}
 
 	@PostMapping("/user")
