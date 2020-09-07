@@ -12,4 +12,4 @@ addons:
 sudo: required
 
 before_script:
-  - mysql -e 'create database DBGaleria;'
+  - mysql -e 'create database antvel;'
