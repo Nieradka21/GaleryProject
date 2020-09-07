@@ -2,3 +2,14 @@ language: java
 jdk: oraclejdk11
 before_install:
   - chmod +x mvnw
+addons:
+  apt:
+    sources:
+      - mysql-5.7-trusty
+    packages:
+      - mysql-server
+
+sudo: required
+
+before_script:
+  - mysql -e 'create database DBGaleria;'
