@@ -71,7 +71,7 @@ public class UsersResource {
 
 	@GetMapping("/login")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Optional<Users> loginAutenticar(@RequestBody Users users) {
+	public Users loginAutenticar(@RequestBody Users users) {
 
 		return usersRepository.findByName(users.getName());
 	}

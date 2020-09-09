@@ -1,9 +1,0 @@
-language: java
-jdk: oraclejdk11
-before_install:
-  - chmod +x mvnw
-services:
-  - mysql
-
-before_script:
-  - mysql -e 'create database IF NOT EXISTS DBGaleria;'

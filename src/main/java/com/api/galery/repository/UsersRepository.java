@@ -28,6 +28,6 @@ public interface UsersRepository extends JpaRepository<Users, Long> {
 	Users findByNameAndPassUsers(@Param("name") String name, @Param("pass") String pass);
 
 	@Query(value = "SELECT u FROM Users u WHERE u.name = :name")
-	Optional<Users> findByName(@Param("name") String name);
+	Users findByName(@Param("name") String name);
 
 }

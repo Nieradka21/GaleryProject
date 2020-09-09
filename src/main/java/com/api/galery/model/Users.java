@@ -9,8 +9,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import com.api.galery.enums.PerfilEnum;
-
 @Entity
 @Table(name = "tb_users")
 public class Users implements Serializable {
