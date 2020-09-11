@@ -1,4 +1,4 @@
-package com.api.galery.config;
+package com.api.galery.jwt.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -51,7 +51,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity httpSecurity) throws Exception {
 		httpSecurity.csrf().disable()
 // Não cheque essas requisições
-				.authorizeRequests().antMatchers("/auth","/galery/users","/galery/login")
+				.authorizeRequests().antMatchers("/auth")
 				.permitAll().
 // Qualquer outra requisição deve ser checada
 				anyRequest().authenticated().and().exceptionHandling()

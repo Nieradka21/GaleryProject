@@ -1,4 +1,4 @@
-package com.api.galery.config;
+package com.api.galery.jwt.config;
 
 import java.io.Serializable;
 

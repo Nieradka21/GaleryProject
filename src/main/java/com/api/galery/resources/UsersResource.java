@@ -23,6 +23,7 @@ import javax.ws.rs.Produces;
 
 import javax.ws.rs.core.MediaType;
 
+import com.api.galery.jwt.config.JwtTokenUtil;
 import com.api.galery.model.Users;
 import com.api.galery.repository.UsersRepository;
 
@@ -34,6 +35,9 @@ public class UsersResource {
 
 	@Autowired
 	UsersRepository usersRepository;
+
+	@Autowired
+	JwtTokenUtil JwtTokenUtil;
 
 	@Bean
 	public BCryptPasswordEncoder bCryptPasswordEncoder() {
@@ -73,7 +77,7 @@ public class UsersResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Users loginAutenticar(@RequestBody Users users) {
 
-		return usersRepository.findByName(users.getName());
+		return null;
 	}
 
 }

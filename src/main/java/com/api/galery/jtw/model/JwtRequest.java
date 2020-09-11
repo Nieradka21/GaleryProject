@@ -4,34 +4,35 @@ import java.io.Serializable;
 
 public class JwtRequest implements Serializable {
 
-private static final long serialVersionUID = 5926468583005150707L;
+	private static final long serialVersionUID = 5926468583005150707L;
 
-private String username;
-private String password;
+	private String name;
+	private String pass;
 
-public JwtRequest()
-{
-}
+	public JwtRequest() {
+	}
 
-public JwtRequest(String username, String password) {
-	this.setUsername(username);
-	this.setPassword(password);
-}
+	public JwtRequest(String name, String pass) {
+		this.setName(name);
+		this.setPass(pass);
+	}
 
-public String getUsername() {
-return this.username;
-}
+	public String getName() {
+		return name;
+	}
 
-public void setUsername(String username) {
-this.username = username;
-}
+	public void setName(String name) {
+		this.name = name;
+	}
 
-public String getPassword() {
-return this.password;
-}
+	public String getPass() {
+		return pass;
+	}
 
-public void setPassword(String password) {
-this.password = password;
-}
+	public void setPass(String pass) {
+		this.pass = pass;
+	}
+
+	
 
 }

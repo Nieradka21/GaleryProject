@@ -13,9 +13,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.api.galery.config.JwtTokenUtil;
 import com.api.galery.jtw.model.JwtRequest;
 import com.api.galery.jtw.model.JwtResponse;
+import com.api.galery.jwt.config.JwtTokenUtil;
 import com.api.galery.jwt.service.JwtUserDetailsService;
 
 
@@ -35,16 +35,16 @@ private JwtUserDetailsService userDetailsService;
 
 @RequestMapping(value = "/auth", method = RequestMethod.POST)
 public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest) throws Exception {
-	authenticate(authenticationRequest.getUsername(), authenticationRequest.getPassword());
+	authenticate(authenticationRequest.getName(), authenticationRequest.getPass());
 	final UserDetails userDetails = userDetailsService
-			.loadUserByUsername(authenticationRequest.getUsername());
+			.loadUserByUsername(authenticationRequest.getName());
 	final String token = jwtTokenUtil.generateToken(userDetails);
-return ResponseEntity.ok(new JwtResponse(token));
+return  ResponseEntity.ok(new JwtResponse(token));
 }
 
-private void authenticate(String username, String password) throws Exception {
+private void authenticate(String name, String pass) throws Exception {
 try {
-	authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
+	authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(name, pass));
 } catch (DisabledException e) {
 	throw new Exception("USER_DISABLED", e);
 } catch (BadCredentialsException e) {

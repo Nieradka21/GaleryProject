@@ -14,7 +14,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.api.galery.config.JwtTokenUtil;
+import com.api.galery.jwt.config.JwtTokenUtil;
 import com.api.galery.jwt.service.JwtUserDetailsService;
 
 import io.jsonwebtoken.ExpiredJwtException;
