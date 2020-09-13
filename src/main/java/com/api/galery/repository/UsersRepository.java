@@ -1,7 +1,6 @@
 package com.api.galery.repository;
 
-
-
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -25,9 +24,9 @@ public interface UsersRepository extends JpaRepository<Users, Long> {
 	Page<Users> findByNameContaining(String infix, Pageable pageable);
 
 	@Query(value = "SELECT u.name,u.pass FROM Users u WHERE u.name = :name and u.pass = :pass")
-	Users findByNameAndPassUsers(@Param("name") String name, @Param("pass") String pass);
+	List<?> findByNameAndPassUsers(@Param("name") String name, @Param("pass") String pass);
 
-	@Query(value = "SELECT u FROM Users u WHERE u.name = :name")
-	Users findByName(@Param("name") String name);
+	@Query(value = "SELECT u FROM Users u WHERE u.email = :email")
+	Users findByName(@Param("email") String email);
 
 }

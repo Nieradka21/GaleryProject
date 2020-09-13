@@ -25,6 +25,8 @@ public class Users implements Serializable {
 	private String access;
 	@Column(name = "user_pass")
 	private String pass;
+	@Column(name = "email")
+	private String email;
 
 	public Long getId() {
 		return id;
@@ -56,6 +58,14 @@ public class Users implements Serializable {
 
 	public void setAccess(String access) {
 		this.access = access;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
 	}
 
 }

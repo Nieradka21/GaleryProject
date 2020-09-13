@@ -15,8 +15,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
+import javax.mail.MessagingException;
 import javax.validation.Valid;
 
 import javax.ws.rs.Produces;
@@ -26,6 +30,7 @@ import javax.ws.rs.core.MediaType;
 import com.api.galery.jwt.config.JwtTokenUtil;
 import com.api.galery.model.Users;
 import com.api.galery.repository.UsersRepository;
+import com.api.galery.sendEmail.Email;
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -38,6 +43,9 @@ public class UsersResource {
 
 	@Autowired
 	JwtTokenUtil JwtTokenUtil;
+
+	@Autowired
+	Email email;
 
 	@Bean
 	public BCryptPasswordEncoder bCryptPasswordEncoder() {
@@ -64,6 +72,7 @@ public class UsersResource {
 	@PutMapping("/user")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Users editarUsuario(@RequestBody @Valid Users users) {
+		users.setPass(bCryptPasswordEncoder().encode(users.getPass()));
 		return usersRepository.save(users);
 	}
 
@@ -75,9 +84,18 @@ public class UsersResource {
 
 	@GetMapping("/login")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Users loginAutenticar(@RequestBody Users users) {
-
-		return null;
+	public String esqueciSenha(@RequestBody Users users) {
+		try {
+			email.sendEmail(users.getEmail());
+		} catch (MessagingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return "Enviado com sucesso";
+		// usersRepository.findByNameAndPassUsers(users.getName(), users.getPass());
 	}
 
 }

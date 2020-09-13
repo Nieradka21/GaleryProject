@@ -35,16 +35,16 @@ private JwtUserDetailsService userDetailsService;
 
 @RequestMapping(value = "/auth", method = RequestMethod.POST)
 public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest) throws Exception {
-	authenticate(authenticationRequest.getName(), authenticationRequest.getPass());
+	authenticate(authenticationRequest.getEmail(), authenticationRequest.getPass());
 	final UserDetails userDetails = userDetailsService
-			.loadUserByUsername(authenticationRequest.getName());
+			.loadUserByUsername(authenticationRequest.getEmail());
 	final String token = jwtTokenUtil.generateToken(userDetails);
 return  ResponseEntity.ok(new JwtResponse(token));
 }
 
-private void authenticate(String name, String pass) throws Exception {
+private void authenticate(String email, String pass) throws Exception {
 try {
-	authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(name, pass));
+	authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, pass));
 } catch (DisabledException e) {
 	throw new Exception("USER_DISABLED", e);
 } catch (BadCredentialsException e) {
