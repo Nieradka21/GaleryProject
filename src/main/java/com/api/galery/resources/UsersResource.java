@@ -82,11 +82,11 @@ public class UsersResource {
 		return usersRepository.deleteById(id);
 	}
 
-	@GetMapping("/login")
+	@GetMapping("/email")
 	@Produces(MediaType.APPLICATION_JSON)
 	public String esqueciSenha(@RequestBody Users users) {
 		try {
-			email.sendEmail(users.getEmail());
+			email.sendEmailWithAttachment(users.getEmail());
 		} catch (MessagingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

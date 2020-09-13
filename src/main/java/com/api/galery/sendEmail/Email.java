@@ -10,77 +10,479 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 
+import com.api.galery.model.Users;
+import com.api.galery.repository.UsersRepository;
+import com.api.galery.resources.UsersResource;
+
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.io.IOException;
 
 @SpringBootApplication
-public class Email   {
+public class Email {
 
-    //https://docs.spring.io/spring/docs/5.1.6.RELEASE/spring-framework-reference/integration.html#mail
-    @Autowired
-    private JavaMailSender javaMailSender;
+	// https://docs.spring.io/spring/docs/5.1.6.RELEASE/spring-framework-reference/integration.html#mail
+	@Autowired
+	private JavaMailSender javaMailSender;
 
-    /*
-     @Override
-    public void run(String... args) {
+	@Autowired
+	UsersRepository usersRepository;
 
-        System.out.println("Sending Email...");
+	/*
+	 * @Override public void run(String... args) {
+	 * 
+	 * System.out.println("Sending Email...");
+	 * 
+	 * try { //sendEmail(); //sendEmailWithAttachment();
+	 * 
+	 * 
+	 * } catch (MessagingException e) { e.printStackTrace(); } catch (IOException e)
+	 * { e.printStackTrace(); }
+	 * 
+	 * System.out.println("Done");
+	 * 
+	 * }
+	 */
 
-        try {
-           //sendEmail();
-            //sendEmailWithAttachment();
-     
+	public void sendEmail(String email) throws MessagingException, IOException {
 
-        } catch (MessagingException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+		SimpleMailMessage msg = new SimpleMailMessage();
+		msg.setTo(email);
 
-        System.out.println("Done");
-
-    }*/
-
-   public void sendEmail(String email) throws MessagingException, IOException {
-
-        SimpleMailMessage msg = new SimpleMailMessage();
-        msg.setTo(email);
-
-        msg.setSubject("Testing from Spring Boot");
+		msg.setSubject("Testing from Spring Boot");
 		msg.setText("Hello World \n Spring Boot Email");
 
-        javaMailSender.send(msg);
+		javaMailSender.send(msg);
 
-    }
+	}
 
-    void sendEmailWithAttachment() throws MessagingException, IOException {
+	public void sendEmailWithAttachment(String email) throws MessagingException, IOException {
 
-        MimeMessage msg = javaMailSender.createMimeMessage();
+		Users name = usersRepository.findByEmail(email);
+		if (name.getEmail() != null) {
+			
+			MimeMessage msg = javaMailSender.createMimeMessage();
+			// true = multipart message
+			MimeMessageHelper helper = new MimeMessageHelper(msg, true);
+			helper.setTo(email);
 
-        // true = multipart message
-        MimeMessageHelper helper = new MimeMessageHelper(msg, true);
-        helper.setTo("ter.lbiocaltti@restoque.com.br");
+			helper.setSubject("Testing from Spring Boot");
 
-        helper.setSubject("Testing from Spring Boot");
+			// default = text/plain
+			// helper.setText("Check attachment for image!");
 
-        // default = text/plain
-        //helper.setText("Check attachment for image!");
+			// true = text/html
 
-        // true = text/html
-        helper.setText("<h1>Check attachment for image!</h1>", true);
+			helper.setText("<!DOCTYPE html\r\n"
+					+ "  PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\r\n"
+					+ "<html xmlns=\"http://www.w3.org/1999/xhtml\" xmlns:o=\"urn:schemas-microsoft-com:office:office\"\r\n"
+					+ "  style=\"width:100%;font-family:helvetica, 'helvetica neue', arial, verdana, sans-serif;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;padding:0;Margin:0\">\r\n"
+					+ "\r\n" + "<head>\r\n" + "  <meta charset=\"UTF-8\">\r\n"
+					+ "  <meta content=\"width=device-width, initial-scale=1\" name=\"viewport\">\r\n"
+					+ "  <meta name=\"x-apple-disable-message-reformatting\">\r\n"
+					+ "  <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\r\n"
+					+ "  <meta content=\"telephone=no\" name=\"format-detection\">\r\n"
+					+ "  <title>Novo modelo de e-mail 2020-09-13</title>\r\n" + "  <!--[if (mso 16)]>\r\n"
+					+ "    <style type=\"text/css\">\r\n" + "    a {text-decoration: none;}\r\n" + "    </style>\r\n"
+					+ "    <![endif]-->\r\n"
+					+ "  <!--[if gte mso 9]><style>sup { font-size: 100% !important; }</style><![endif]-->\r\n"
+					+ "  <!--[if gte mso 9]>\r\n" + "<xml>\r\n" + "    <o:OfficeDocumentSettings>\r\n"
+					+ "    <o:AllowPNG></o:AllowPNG>\r\n" + "    <o:PixelsPerInch>96</o:PixelsPerInch>\r\n"
+					+ "    </o:OfficeDocumentSettings>\r\n" + "</xml>\r\n" + "<![endif]-->\r\n"
+					+ "  <style type=\"text/css\">\r\n" + "    #outlook a {\r\n" + "      padding: 0;\r\n" + "    }\r\n"
+					+ "\r\n" + "    .ExternalClass {\r\n" + "      width: 100%;\r\n" + "    }\r\n" + "\r\n"
+					+ "    .ExternalClass,\r\n" + "    .ExternalClass p,\r\n" + "    .ExternalClass span,\r\n"
+					+ "    .ExternalClass font,\r\n" + "    .ExternalClass td,\r\n" + "    .ExternalClass div {\r\n"
+					+ "      line-height: 100%;\r\n" + "    }\r\n" + "\r\n" + "    .es-button {\r\n"
+					+ "      mso-style-priority: 100 !important;\r\n" + "      text-decoration: none !important;\r\n"
+					+ "    }\r\n" + "\r\n" + "    a[x-apple-data-detectors] {\r\n"
+					+ "      color: inherit !important;\r\n" + "      text-decoration: none !important;\r\n"
+					+ "      font-size: inherit !important;\r\n" + "      font-family: inherit !important;\r\n"
+					+ "      font-weight: inherit !important;\r\n" + "      line-height: inherit !important;\r\n"
+					+ "    }\r\n" + "\r\n" + "    .es-desk-hidden {\r\n" + "      display: none;\r\n"
+					+ "      float: left;\r\n" + "      overflow: hidden;\r\n" + "      width: 0;\r\n"
+					+ "      max-height: 0;\r\n" + "      line-height: 0;\r\n" + "      mso-hide: all;\r\n"
+					+ "    }\r\n" + "\r\n" + "    .es-button-border:hover a.es-button {\r\n"
+					+ "      background: #ffffff !important;\r\n" + "      border-color: #ffffff !important;\r\n"
+					+ "    }\r\n" + "\r\n" + "    .es-button-border:hover {\r\n"
+					+ "      background: #ffffff !important;\r\n"
+					+ "      border-style: solid solid solid solid !important;\r\n"
+					+ "      border-color: #3d5ca3 #3d5ca3 #3d5ca3 #3d5ca3 !important;\r\n" + "    }\r\n" + "\r\n"
+					+ "    @media only screen and (max-width:600px) {\r\n" + "\r\n" + "      p,\r\n"
+					+ "      ul li,\r\n" + "      ol li,\r\n" + "      a {\r\n"
+					+ "        font-size: 16px !important;\r\n" + "        line-height: 150% !important\r\n"
+					+ "      }\r\n" + "\r\n" + "      h1 {\r\n" + "        font-size: 20px !important;\r\n"
+					+ "        text-align: center;\r\n" + "        line-height: 120% !important\r\n" + "      }\r\n"
+					+ "\r\n" + "      h2 {\r\n" + "        font-size: 16px !important;\r\n"
+					+ "        text-align: left;\r\n" + "        line-height: 120% !important\r\n" + "      }\r\n"
+					+ "\r\n" + "      h3 {\r\n" + "        font-size: 20px !important;\r\n"
+					+ "        text-align: center;\r\n" + "        line-height: 120% !important\r\n" + "      }\r\n"
+					+ "\r\n" + "      h1 a {\r\n" + "        font-size: 20px !important\r\n" + "      }\r\n" + "\r\n"
+					+ "      h2 a {\r\n" + "        font-size: 16px !important;\r\n" + "        text-align: left\r\n"
+					+ "      }\r\n" + "\r\n" + "      h3 a {\r\n" + "        font-size: 20px !important\r\n"
+					+ "      }\r\n" + "\r\n" + "      .es-menu td a {\r\n" + "        font-size: 14px !important\r\n"
+					+ "      }\r\n" + "\r\n" + "      .es-header-body p,\r\n" + "      .es-header-body ul li,\r\n"
+					+ "      .es-header-body ol li,\r\n" + "      .es-header-body a {\r\n"
+					+ "        font-size: 10px !important\r\n" + "      }\r\n" + "\r\n" + "      .es-footer-body p,\r\n"
+					+ "      .es-footer-body ul li,\r\n" + "      .es-footer-body ol li,\r\n"
+					+ "      .es-footer-body a {\r\n" + "        font-size: 12px !important\r\n" + "      }\r\n"
+					+ "\r\n" + "      .es-infoblock p,\r\n" + "      .es-infoblock ul li,\r\n"
+					+ "      .es-infoblock ol li,\r\n" + "      .es-infoblock a {\r\n"
+					+ "        font-size: 12px !important\r\n" + "      }\r\n" + "\r\n"
+					+ "      *[class=\"gmail-fix\"] {\r\n" + "        display: none !important\r\n" + "      }\r\n"
+					+ "\r\n" + "      .es-m-txt-c,\r\n" + "      .es-m-txt-c h1,\r\n" + "      .es-m-txt-c h2,\r\n"
+					+ "      .es-m-txt-c h3 {\r\n" + "        text-align: center !important\r\n" + "      }\r\n"
+					+ "\r\n" + "      .es-m-txt-r,\r\n" + "      .es-m-txt-r h1,\r\n" + "      .es-m-txt-r h2,\r\n"
+					+ "      .es-m-txt-r h3 {\r\n" + "        text-align: right !important\r\n" + "      }\r\n" + "\r\n"
+					+ "      .es-m-txt-l,\r\n" + "      .es-m-txt-l h1,\r\n" + "      .es-m-txt-l h2,\r\n"
+					+ "      .es-m-txt-l h3 {\r\n" + "        text-align: left !important\r\n" + "      }\r\n" + "\r\n"
+					+ "      .es-m-txt-r img,\r\n" + "      .es-m-txt-c img,\r\n" + "      .es-m-txt-l img {\r\n"
+					+ "        display: inline !important\r\n" + "      }\r\n" + "\r\n"
+					+ "      .es-button-border {\r\n" + "        display: block !important\r\n" + "      }\r\n" + "\r\n"
+					+ "      a.es-button {\r\n" + "        font-size: 14px !important;\r\n"
+					+ "        display: block !important;\r\n" + "        border-left-width: 0px !important;\r\n"
+					+ "        border-right-width: 0px !important\r\n" + "      }\r\n" + "\r\n"
+					+ "      .es-btn-fw {\r\n" + "        border-width: 10px 0px !important;\r\n"
+					+ "        text-align: center !important\r\n" + "      }\r\n" + "\r\n"
+					+ "      .es-adaptive table,\r\n" + "      .es-btn-fw,\r\n" + "      .es-btn-fw-brdr,\r\n"
+					+ "      .es-left,\r\n" + "      .es-right {\r\n" + "        width: 100% !important\r\n"
+					+ "      }\r\n" + "\r\n" + "      .es-content table,\r\n" + "      .es-header table,\r\n"
+					+ "      .es-footer table,\r\n" + "      .es-content,\r\n" + "      .es-footer,\r\n"
+					+ "      .es-header {\r\n" + "        width: 100% !important;\r\n"
+					+ "        max-width: 600px !important\r\n" + "      }\r\n" + "\r\n" + "      .es-adapt-td {\r\n"
+					+ "        display: block !important;\r\n" + "        width: 100% !important\r\n" + "      }\r\n"
+					+ "\r\n" + "      .adapt-img {\r\n" + "        width: 100% !important;\r\n"
+					+ "        height: auto !important\r\n" + "      }\r\n" + "\r\n" + "      .es-m-p0 {\r\n"
+					+ "        padding: 0px !important\r\n" + "      }\r\n" + "\r\n" + "      .es-m-p0r {\r\n"
+					+ "        padding-right: 0px !important\r\n" + "      }\r\n" + "\r\n" + "      .es-m-p0l {\r\n"
+					+ "        padding-left: 0px !important\r\n" + "      }\r\n" + "\r\n" + "      .es-m-p0t {\r\n"
+					+ "        padding-top: 0px !important\r\n" + "      }\r\n" + "\r\n" + "      .es-m-p0b {\r\n"
+					+ "        padding-bottom: 0 !important\r\n" + "      }\r\n" + "\r\n" + "      .es-m-p20b {\r\n"
+					+ "        padding-bottom: 20px !important\r\n" + "      }\r\n" + "\r\n"
+					+ "      .es-mobile-hidden,\r\n" + "      .es-hidden {\r\n" + "        display: none !important\r\n"
+					+ "      }\r\n" + "\r\n" + "      tr.es-desk-hidden,\r\n" + "      td.es-desk-hidden,\r\n"
+					+ "      table.es-desk-hidden {\r\n" + "        width: auto !important;\r\n"
+					+ "        overflow: visible !important;\r\n" + "        float: none !important;\r\n"
+					+ "        max-height: inherit !important;\r\n" + "        line-height: inherit !important\r\n"
+					+ "      }\r\n" + "\r\n" + "      tr.es-desk-hidden {\r\n"
+					+ "        display: table-row !important\r\n" + "      }\r\n" + "\r\n"
+					+ "      table.es-desk-hidden {\r\n" + "        display: table !important\r\n" + "      }\r\n"
+					+ "\r\n" + "      td.es-desk-menu-hidden {\r\n" + "        display: table-cell !important\r\n"
+					+ "      }\r\n" + "\r\n" + "      table.es-table-not-adapt,\r\n"
+					+ "      .esd-block-html table {\r\n" + "        width: auto !important\r\n" + "      }\r\n"
+					+ "\r\n" + "      table.es-social {\r\n" + "        display: inline-block !important\r\n"
+					+ "      }\r\n" + "\r\n" + "      table.es-social td {\r\n"
+					+ "        display: inline-block !important\r\n" + "      }\r\n" + "    }\r\n" + "  </style>\r\n"
+					+ "</head>\r\n" + "\r\n" + "<body\r\n"
+					+ "  style=\"width:100%;font-family:helvetica, 'helvetica neue', arial, verdana, sans-serif;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;padding:0;Margin:0\">\r\n"
+					+ "  <div class=\"es-wrapper-color\" style=\"background-color:#FAFAFA\">\r\n"
+					+ "    <!--[if gte mso 9]>\r\n"
+					+ "			<v:background xmlns:v=\"urn:schemas-microsoft-com:vml\" fill=\"t\">\r\n"
+					+ "				<v:fill type=\"tile\" color=\"#fafafa\"></v:fill>\r\n"
+					+ "			</v:background>\r\n" + "		<![endif]-->\r\n"
+					+ "    <table class=\"es-wrapper\" width=\"100%\" cellspacing=\"0\" cellpadding=\"0\"\r\n"
+					+ "      style=\"mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;padding:0;Margin:0;width:100%;height:100%;background-repeat:repeat;background-position:center top\">\r\n"
+					+ "      <tr style=\"border-collapse:collapse\">\r\n"
+					+ "        <td valign=\"top\" style=\"padding:0;Margin:0\">\r\n"
+					+ "          <table cellpadding=\"0\" cellspacing=\"0\" class=\"es-content\" align=\"center\"\r\n"
+					+ "            style=\"mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;table-layout:fixed !important;width:100%\">\r\n"
+					+ "            <tr style=\"border-collapse:collapse\">\r\n"
+					+ "              <td class=\"es-adaptive\" align=\"center\" style=\"padding:0;Margin:0\">\r\n"
+					+ "                <table class=\"es-content-body\"\r\n"
+					+ "                  style=\"mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;background-color:transparent;width:600px\"\r\n"
+					+ "                  cellspacing=\"0\" cellpadding=\"0\" bgcolor=\"#ffffff\" align=\"center\">\r\n"
+					+ "                  <tr style=\"border-collapse:collapse\">\r\n"
+					+ "                    <td align=\"left\" style=\"padding:10px;Margin:0\">\r\n"
+					+ "                      <table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\"\r\n"
+					+ "                        style=\"mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px\">\r\n"
+					+ "                        <tr style=\"border-collapse:collapse\">\r\n"
+					+ "                          <td valign=\"top\" align=\"center\" style=\"padding:0;Margin:0;width:580px\">\r\n"
+					+ "                            <table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" role=\"presentation\"\r\n"
+					+ "                              style=\"mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px\">\r\n"
+					+ "                              <tr style=\"border-collapse:collapse\">\r\n"
+					+ "                                <td align=\"center\" class=\"es-infoblock\"\r\n"
+					+ "                                  style=\"padding:0;Margin:0;line-height:14px;font-size:12px;color:#CCCCCC\">\r\n"
+					+ "                                  <p\r\n"
+					+ "                                    style=\"Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:12px;font-family:helvetica, 'helvetica neue', arial, verdana, sans-serif;line-height:14px;color:#CCCCCC\">\r\n"
+					+ "                                    Put your preheader text here. <a href=\"https://viewstripo.email\" class=\"view\"\r\n"
+					+ "                                      target=\"_blank\"\r\n"
+					+ "                                      style=\"-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:helvetica, 'helvetica neue', arial, verdana, sans-serif;font-size:12px;text-decoration:none;color:#CCCCCC\">View\r\n"
+					+ "                                      in browser</a></p>\r\n"
+					+ "                                </td>\r\n" + "                              </tr>\r\n"
+					+ "                            </table>\r\n" + "                          </td>\r\n"
+					+ "                        </tr>\r\n" + "                      </table>\r\n"
+					+ "                    </td>\r\n" + "                  </tr>\r\n" + "                </table>\r\n"
+					+ "              </td>\r\n" + "            </tr>\r\n" + "          </table>\r\n"
+					+ "          <table cellpadding=\"0\" cellspacing=\"0\" class=\"es-header\" align=\"center\"\r\n"
+					+ "            style=\"mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;table-layout:fixed !important;width:100%;background-color:transparent;background-repeat:repeat;background-position:center top\">\r\n"
+					+ "            <tr style=\"border-collapse:collapse\">\r\n"
+					+ "              <td class=\"es-adaptive\" align=\"center\" style=\"padding:0;Margin:0\">\r\n"
+					+ "                <table class=\"es-header-body\"\r\n"
+					+ "                  style=\"mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;background-color:#3D5CA3;width:600px\"\r\n"
+					+ "                  cellspacing=\"0\" cellpadding=\"0\" bgcolor=\"#3d5ca3\" align=\"center\">\r\n"
+					+ "                  <tr style=\"border-collapse:collapse\">\r\n" + "                    <td\r\n"
+					+ "                      style=\"Margin:0;padding-top:20px;padding-bottom:20px;padding-left:20px;padding-right:20px;background-color:#3D5CA3\"\r\n"
+					+ "                      bgcolor=\"#3d5ca3\" align=\"left\">\r\n"
+					+ "                      <!--[if mso]><table style=\"width:560px\" cellpadding=\"0\" \r\n"
+					+ "                        cellspacing=\"0\"><tr><td style=\"width:270px\" valign=\"top\"><![endif]-->\r\n"
+					+ "                      <table class=\"es-left\" cellspacing=\"0\" cellpadding=\"0\" align=\"left\"\r\n"
+					+ "                        style=\"mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;float:left\">\r\n"
+					+ "                        <tr style=\"border-collapse:collapse\">\r\n"
+					+ "                          <td class=\"es-m-p20b\" align=\"left\" style=\"padding:0;Margin:0;width:270px\">\r\n"
+					+ "                            <table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" role=\"presentation\"\r\n"
+					+ "                              style=\"mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px\">\r\n"
+					+ "                              <tr style=\"border-collapse:collapse\">\r\n"
+					+ "                                <td class=\"es-m-p0l es-m-txt-c\" align=\"left\" style=\"padding:0;Margin:0;font-size:0\"><a\r\n"
+					+ "                                    href=\"https://viewstripo.email\" target=\"_blank\"\r\n"
+					+ "                                    style=\"-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:helvetica, 'helvetica neue', arial, verdana, sans-serif;font-size:14px;text-decoration:none;color:#1376C8\"><img\r\n"
+					+ "                                      src='my_photo.png' alt\r\n"
+					+ "                                      style=\"display:block;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic\"\r\n"
+					+ "                                      width=\"183\" height=\"57\"></a></td>\r\n"
+					+ "                              </tr>\r\n" + "                            </table>\r\n"
+					+ "                          </td>\r\n" + "                        </tr>\r\n"
+					+ "                      </table>\r\n"
+					+ "                      <!--[if mso]></td><td style=\"width:20px\"></td><td style=\"width:270px\" valign=\"top\"><![endif]-->\r\n"
+					+ "                      <table class=\"es-right\" cellspacing=\"0\" cellpadding=\"0\" align=\"right\"\r\n"
+					+ "                        style=\"mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;float:right\">\r\n"
+					+ "                        <tr style=\"border-collapse:collapse\">\r\n"
+					+ "                          <td align=\"left\" style=\"padding:0;Margin:0;width:270px\">\r\n"
+					+ "                            <table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\"\r\n"
+					+ "                              style=\"mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px\">\r\n"
+					+ "                              <tr style=\"border-collapse:collapse\">\r\n"
+					+ "                                <td align=\"center\" style=\"padding:0;Margin:0;display:none\"></td>\r\n"
+					+ "                              </tr>\r\n" + "                            </table>\r\n"
+					+ "                          </td>\r\n" + "                        </tr>\r\n"
+					+ "                      </table>\r\n"
+					+ "                      <!--[if mso]></td></tr></table><![endif]-->\r\n"
+					+ "                    </td>\r\n" + "                  </tr>\r\n" + "                </table>\r\n"
+					+ "              </td>\r\n" + "            </tr>\r\n" + "          </table>\r\n"
+					+ "          <table class=\"es-content\" cellspacing=\"0\" cellpadding=\"0\" align=\"center\"\r\n"
+					+ "            style=\"mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;table-layout:fixed !important;width:100%\">\r\n"
+					+ "            <tr style=\"border-collapse:collapse\">\r\n"
+					+ "              <td style=\"padding:0;Margin:0;background-color:#FAFAFA\" bgcolor=\"#fafafa\" align=\"center\">\r\n"
+					+ "                <table class=\"es-content-body\"\r\n"
+					+ "                  style=\"mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;background-color:#FFFFFF;width:600px\"\r\n"
+					+ "                  cellspacing=\"0\" cellpadding=\"0\" bgcolor=\"#ffffff\" align=\"center\">\r\n"
+					+ "                  <tr style=\"border-collapse:collapse\">\r\n" + "                    <td\r\n"
+					+ "                      style=\"padding:0;Margin:0;padding-left:20px;padding-right:20px;padding-top:40px;background-color:transparent;background-position:left top\"\r\n"
+					+ "                      bgcolor=\"transparent\" align=\"left\">\r\n"
+					+ "                      <table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\"\r\n"
+					+ "                        style=\"mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px\">\r\n"
+					+ "                        <tr style=\"border-collapse:collapse\">\r\n"
+					+ "                          <td valign=\"top\" align=\"center\" style=\"padding:0;Margin:0;width:560px\">\r\n"
+					+ "                            <table\r\n"
+					+ "                              style=\"mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;background-position:left top\"\r\n"
+					+ "                              width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" role=\"presentation\">\r\n"
+					+ "                              <tr style=\"border-collapse:collapse\">\r\n"
+					+ "                                <td align=\"center\"\r\n"
+					+ "                                  style=\"padding:0;Margin:0;padding-top:5px;padding-bottom:5px;font-size:0\"><img\r\n"
+					+ "                                    src='my_photo.png' alt\r\n"
+					+ "                                    style=\"display:block;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic\"\r\n"
+					+ "                                    width=\"175\" height=\"208\"></td>\r\n"
+					+ "                              </tr>\r\n"
+					+ "                              <tr style=\"border-collapse:collapse\">\r\n"
+					+ "                                <td align=\"center\" style=\"padding:0;Margin:0;padding-top:15px;padding-bottom:15px\">\r\n"
+					+ "                                  <h1\r\n"
+					+ "                                    style=\"Margin:0;line-height:24px;mso-line-height-rule:exactly;font-family:arial, 'helvetica neue', helvetica, sans-serif;font-size:20px;font-style:normal;font-weight:normal;color:#333333\">\r\n"
+					+ "                                    <strong>FORGOT YOUR </strong></h1>\r\n"
+					+ "                                  <h1\r\n"
+					+ "                                    style=\"Margin:0;line-height:24px;mso-line-height-rule:exactly;font-family:arial, 'helvetica neue', helvetica, sans-serif;font-size:20px;font-style:normal;font-weight:normal;color:#333333\">\r\n"
+					+ "                                    <strong>&nbsp;PASSWORD?</strong></h1>\r\n"
+					+ "                                </td>\r\n" + "                              </tr>\r\n"
+					+ "                              <tr style=\"border-collapse:collapse\">\r\n"
+					+ "                                <td align=\"left\" style=\"padding:0;Margin:0;padding-left:40px;padding-right:40px\">\r\n"
+					+ "                                  <p\r\n"
+					+ "                                    style=\"Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:16px;font-family:helvetica, 'helvetica neue', arial, verdana, sans-serif;line-height:24px;color:#666666;text-align:center\">\r\n"
+					+ "                                    HI,&nbsp;" + name.getName() + "</p>\r\n"
+					+ "                                </td>\r\n" + "                              </tr>\r\n"
+					+ "                              <tr style=\"border-collapse:collapse\">\r\n"
+					+ "                                <td align=\"left\" style=\"padding:0;Margin:0;padding-right:35px;padding-left:40px\">\r\n"
+					+ "                                  <p\r\n"
+					+ "                                    style=\"Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:16px;font-family:helvetica, 'helvetica neue', arial, verdana, sans-serif;line-height:24px;color:#666666;text-align:center\">\r\n"
+					+ "                                    There was a request to change your password!</p>\r\n"
+					+ "                                </td>\r\n" + "                              </tr>\r\n"
+					+ "                              <tr style=\"border-collapse:collapse\">\r\n"
+					+ "                                <td align=\"center\"\r\n"
+					+ "                                  style=\"padding:0;Margin:0;padding-top:25px;padding-left:40px;padding-right:40px\">\r\n"
+					+ "                                  <p\r\n"
+					+ "                                    style=\"Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:16px;font-family:helvetica, 'helvetica neue', arial, verdana, sans-serif;line-height:24px;color:#666666\">\r\n"
+					+ "                                    If did not make this request, just ignore this email. Otherwise, please click the\r\n"
+					+ "                                    button below to change your password:</p>\r\n"
+					+ "                                </td>\r\n" + "                              </tr>\r\n"
+					+ "                              <tr style=\"border-collapse:collapse\">\r\n"
+					+ "                                <td align=\"center\"\r\n"
+					+ "                                  style=\"Margin:0;padding-left:10px;padding-right:10px;padding-top:40px;padding-bottom:40px\">\r\n"
+					+ "                                  <span class=\"es-button-border\"\r\n"
+					+ "                                    style=\"border-style:solid;border-color:#3D5CA3;background:#FFFFFF;border-width:2px;display:inline-block;border-radius:10px;width:auto\"><a\r\n"
+					+ "                                      href=\"https://viewstripo.email/\" class=\"es-button\" target=\"_blank\"\r\n"
+					+ "                                      style=\"mso-style-priority:100 !important;text-decoration:none;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:arial, 'helvetica neue', helvetica, sans-serif;font-size:14px;color:#3D5CA3;border-style:solid;border-color:#FFFFFF;border-width:15px 20px 15px 20px;display:inline-block;background:#FFFFFF;border-radius:10px;font-weight:bold;font-style:normal;line-height:17px;width:auto;text-align:center\">RESET\r\n"
+					+ "                                      PASSWORD</a></span></td>\r\n"
+					+ "                              </tr>\r\n" + "                            </table>\r\n"
+					+ "                          </td>\r\n" + "                        </tr>\r\n"
+					+ "                      </table>\r\n" + "                    </td>\r\n"
+					+ "                  </tr>\r\n" + "                  <tr style=\"border-collapse:collapse\">\r\n"
+					+ "                    <td\r\n"
+					+ "                      style=\"padding:0;Margin:0;padding-left:10px;padding-right:10px;padding-top:20px;background-position:center center\"\r\n"
+					+ "                      align=\"left\">\r\n"
+					+ "                      <!--[if mso]><table style=\"width:580px\" cellpadding=\"0\" cellspacing=\"0\"><tr><td style=\"width:199px\" valign=\"top\"><![endif]-->\r\n"
+					+ "                      <table class=\"es-left\" cellspacing=\"0\" cellpadding=\"0\" align=\"left\"\r\n"
+					+ "                        style=\"mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;float:left\">\r\n"
+					+ "                        <tr style=\"border-collapse:collapse\">\r\n"
+					+ "                          <td align=\"left\" style=\"padding:0;Margin:0;width:199px\">\r\n"
+					+ "                            <table\r\n"
+					+ "                              style=\"mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;background-position:center center\"\r\n"
+					+ "                              width=\"100%\" cellspacing=\"0\" cellpadding=\"0\">\r\n"
+					+ "                              <tr style=\"border-collapse:collapse\">\r\n"
+					+ "                                <td align=\"center\" style=\"padding:0;Margin:0;display:none\"></td>\r\n"
+					+ "                              </tr>\r\n" + "                            </table>\r\n"
+					+ "                          </td>\r\n" + "                        </tr>\r\n"
+					+ "                      </table>\r\n"
+					+ "                      <!--[if mso]></td><td style=\"width:20px\"></td><td style=\"width:361px\" valign=\"top\"><![endif]-->\r\n"
+					+ "                      <table class=\"es-right\" cellspacing=\"0\" cellpadding=\"0\" align=\"right\"\r\n"
+					+ "                        style=\"mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;float:right\">\r\n"
+					+ "                        <tr style=\"border-collapse:collapse\">\r\n"
+					+ "                          <td align=\"left\" style=\"padding:0;Margin:0;width:361px\">\r\n"
+					+ "                            <table\r\n"
+					+ "                              style=\"mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;background-position:center center\"\r\n"
+					+ "                              width=\"100%\" cellspacing=\"0\" cellpadding=\"0\">\r\n"
+					+ "                              <tr style=\"border-collapse:collapse\">\r\n"
+					+ "                                <td align=\"center\" style=\"padding:0;Margin:0;display:none\"></td>\r\n"
+					+ "                              </tr>\r\n" + "                            </table>\r\n"
+					+ "                          </td>\r\n" + "                        </tr>\r\n"
+					+ "                      </table>\r\n"
+					+ "                      <!--[if mso]></td></tr></table><![endif]-->\r\n"
+					+ "                    </td>\r\n" + "                  </tr>\r\n"
+					+ "                  <tr style=\"border-collapse:collapse\">\r\n" + "                    <td\r\n"
+					+ "                      style=\"Margin:0;padding-top:5px;padding-bottom:20px;padding-left:20px;padding-right:20px;background-position:left top\"\r\n"
+					+ "                      align=\"left\">\r\n"
+					+ "                      <table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\"\r\n"
+					+ "                        style=\"mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px\">\r\n"
+					+ "                        <tr style=\"border-collapse:collapse\">\r\n"
+					+ "                          <td valign=\"top\" align=\"center\" style=\"padding:0;Margin:0;width:560px\">\r\n"
+					+ "                            <table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\"\r\n"
+					+ "                              style=\"mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px\">\r\n"
+					+ "                              <tr style=\"border-collapse:collapse\">\r\n"
+					+ "                                <td align=\"center\" style=\"padding:0;Margin:0;display:none\"></td>\r\n"
+					+ "                              </tr>\r\n" + "                            </table>\r\n"
+					+ "                          </td>\r\n" + "                        </tr>\r\n"
+					+ "                      </table>\r\n" + "                    </td>\r\n"
+					+ "                  </tr>\r\n" + "                </table>\r\n" + "              </td>\r\n"
+					+ "            </tr>\r\n" + "          </table>\r\n"
+					+ "          <table class=\"es-footer\" cellspacing=\"0\" cellpadding=\"0\" align=\"center\"\r\n"
+					+ "            style=\"mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;table-layout:fixed !important;width:100%;background-color:transparent;background-repeat:repeat;background-position:center top\">\r\n"
+					+ "            <tr style=\"border-collapse:collapse\">\r\n"
+					+ "              <td style=\"padding:0;Margin:0;background-color:#FAFAFA\" bgcolor=\"#fafafa\" align=\"center\">\r\n"
+					+ "                <table class=\"es-footer-body\" cellspacing=\"0\" cellpadding=\"0\" bgcolor=\"#ffffff\" align=\"center\"\r\n"
+					+ "                  style=\"mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;background-color:transparent;width:600px\">\r\n"
+					+ "                  <tr style=\"border-collapse:collapse\">\r\n" + "                    <td\r\n"
+					+ "                      style=\"Margin:0;padding-top:10px;padding-left:20px;padding-right:20px;padding-bottom:30px;background-color:#FAFBFB\"\r\n"
+					+ "                      bgcolor=\"#fafbfb\" align=\"left\">\r\n"
+					+ "                      <table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\"\r\n"
+					+ "                        style=\"mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px\">\r\n"
+					+ "                        <tr style=\"border-collapse:collapse\">\r\n"
+					+ "                          <td valign=\"top\" align=\"center\" style=\"padding:0;Margin:0;width:560px\">\r\n"
+					+ "                            <table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\"\r\n"
+					+ "                              style=\"mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px\">\r\n"
+					+ "                              <tr style=\"border-collapse:collapse\">\r\n"
+					+ "                                <td align=\"center\" style=\"padding:0;Margin:0;display:none\"></td>\r\n"
+					+ "                              </tr>\r\n" + "                            </table>\r\n"
+					+ "                          </td>\r\n" + "                        </tr>\r\n"
+					+ "                      </table>\r\n" + "                    </td>\r\n"
+					+ "                  </tr>\r\n" + "                </table>\r\n" + "              </td>\r\n"
+					+ "            </tr>\r\n" + "          </table>\r\n"
+					+ "          <table class=\"es-content\" cellspacing=\"0\" cellpadding=\"0\" align=\"center\"\r\n"
+					+ "            style=\"mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;table-layout:fixed !important;width:100%\">\r\n"
+					+ "            <tr style=\"border-collapse:collapse\">\r\n"
+					+ "              <td style=\"padding:0;Margin:0;background-color:#FAFAFA\" bgcolor=\"#fafafa\" align=\"center\">\r\n"
+					+ "                <table class=\"es-content-body\"\r\n"
+					+ "                  style=\"mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;background-color:transparent;width:600px\"\r\n"
+					+ "                  cellspacing=\"0\" cellpadding=\"0\" bgcolor=\"transparent\" align=\"center\">\r\n"
+					+ "                  <tr style=\"border-collapse:collapse\">\r\n"
+					+ "                    <td align=\"left\" style=\"padding:0;Margin:0;padding-top:15px\">\r\n"
+					+ "                      <table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\"\r\n"
+					+ "                        style=\"mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px\">\r\n"
+					+ "                        <tr style=\"border-collapse:collapse\">\r\n"
+					+ "                          <td valign=\"top\" align=\"center\" style=\"padding:0;Margin:0;width:600px\">\r\n"
+					+ "                            <table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" role=\"presentation\"\r\n"
+					+ "                              style=\"mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px\">\r\n"
+					+ "                              <tr style=\"border-collapse:collapse\">\r\n"
+					+ "                                <td align=\"center\"\r\n"
+					+ "                                  style=\"padding:0;Margin:0;padding-bottom:20px;padding-left:20px;padding-right:20px;font-size:0\">\r\n"
+					+ "                                  <table width=\"100%\" height=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\"\r\n"
+					+ "                                    role=\"presentation\"\r\n"
+					+ "                                    style=\"mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px\">\r\n"
+					+ "                                    <tr style=\"border-collapse:collapse\">\r\n"
+					+ "                                      <td\r\n"
+					+ "                                        style=\"padding:0;Margin:0;border-bottom:1px solid #FAFAFA;background:none;height:1px;width:100%;margin:0px\">\r\n"
+					+ "                                      </td>\r\n"
+					+ "                                    </tr>\r\n" + "                                  </table>\r\n"
+					+ "                                </td>\r\n" + "                              </tr>\r\n"
+					+ "                            </table>\r\n" + "                          </td>\r\n"
+					+ "                        </tr>\r\n" + "                      </table>\r\n"
+					+ "                    </td>\r\n" + "                  </tr>\r\n" + "                </table>\r\n"
+					+ "              </td>\r\n" + "            </tr>\r\n" + "          </table>\r\n"
+					+ "          <table class=\"es-footer\" cellspacing=\"0\" cellpadding=\"0\" align=\"center\"\r\n"
+					+ "            style=\"mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;table-layout:fixed !important;width:100%;background-color:transparent;background-repeat:repeat;background-position:center top\">\r\n"
+					+ "            <tr style=\"border-collapse:collapse\">\r\n"
+					+ "              <td style=\"padding:0;Margin:0;background-color:#FAFAFA\" bgcolor=\"#fafafa\" align=\"center\">\r\n"
+					+ "                <table class=\"es-footer-body\"\r\n"
+					+ "                  style=\"mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;background-color:transparent;width:600px\"\r\n"
+					+ "                  cellspacing=\"0\" cellpadding=\"0\" bgcolor=\"transparent\" align=\"center\">\r\n"
+					+ "                  <tr style=\"border-collapse:collapse\">\r\n"
+					+ "                    <td align=\"left\"\r\n"
+					+ "                      style=\"Margin:0;padding-bottom:5px;padding-top:15px;padding-left:20px;padding-right:20px\">\r\n"
+					+ "                      <table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\"\r\n"
+					+ "                        style=\"mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px\">\r\n"
+					+ "                        <tr style=\"border-collapse:collapse\">\r\n"
+					+ "                          <td valign=\"top\" align=\"center\" style=\"padding:0;Margin:0;width:560px\">\r\n"
+					+ "                            <table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\"\r\n"
+					+ "                              style=\"mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px\">\r\n"
+					+ "                              <tr style=\"border-collapse:collapse\">\r\n"
+					+ "                                <td align=\"center\" style=\"padding:0;Margin:0;display:none\"></td>\r\n"
+					+ "                              </tr>\r\n" + "                            </table>\r\n"
+					+ "                          </td>\r\n" + "                        </tr>\r\n"
+					+ "                      </table>\r\n" + "                    </td>\r\n"
+					+ "                  </tr>\r\n" + "                </table>\r\n" + "              </td>\r\n"
+					+ "            </tr>\r\n" + "          </table>\r\n"
+					+ "          <table class=\"es-content\" cellspacing=\"0\" cellpadding=\"0\" align=\"center\"\r\n"
+					+ "            style=\"mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;table-layout:fixed !important;width:100%\">\r\n"
+					+ "            <tr style=\"border-collapse:collapse\">\r\n"
+					+ "              <td align=\"center\" style=\"padding:0;Margin:0\">\r\n"
+					+ "                <table class=\"es-content-body\"\r\n"
+					+ "                  style=\"mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;background-color:transparent;width:600px\"\r\n"
+					+ "                  cellspacing=\"0\" cellpadding=\"0\" bgcolor=\"#ffffff\" align=\"center\">\r\n"
+					+ "                  <tr style=\"border-collapse:collapse\">\r\n"
+					+ "                    <td align=\"left\"\r\n"
+					+ "                      style=\"Margin:0;padding-left:20px;padding-right:20px;padding-top:30px;padding-bottom:30px\">\r\n"
+					+ "                      <table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\"\r\n"
+					+ "                        style=\"mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px\">\r\n"
+					+ "                        <tr style=\"border-collapse:collapse\">\r\n"
+					+ "                          <td valign=\"top\" align=\"center\" style=\"padding:0;Margin:0;width:560px\">\r\n"
+					+ "                            <table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\"\r\n"
+					+ "                              style=\"mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px\">\r\n"
+					+ "                              <tr style=\"border-collapse:collapse\">\r\n"
+					+ "                                <td align=\"center\" style=\"padding:0;Margin:0;display:none\"></td>\r\n"
+					+ "                              </tr>\r\n" + "                            </table>\r\n"
+					+ "                          </td>\r\n" + "                        </tr>\r\n"
+					+ "                      </table>\r\n" + "                    </td>\r\n"
+					+ "                  </tr>\r\n" + "                </table>\r\n" + "              </td>\r\n"
+					+ "            </tr>\r\n" + "          </table>\r\n" + "        </td>\r\n" + "      </tr>\r\n"
+					+ "    </table>\r\n" + "  </div>\r\n" + "</body>\r\n" + "\r\n" + "</html>", true);
 
-        //FileSystemResource file = new FileSystemResource(new File("classpath:android.png"));
+			// FileSystemResource file = new FileSystemResource(new
+			// File("classpath:android.png"));
 
-        //Resource resource = new ClassPathResource("android.png");
-        //InputStream input = resource.getInputStream();
+			// Resource resource = new ClassPathResource("android.png");
+			// InputStream input = resource.getInputStream();
 
-        //ResourceUtils.getFile("classpath:android.png");
+			// ResourceUtils.getFile("classpath:android.png");
 
-        helper.addAttachment("my_photo.png", new ClassPathResource("android.png"));
+			helper.addAttachment("my_photo.png", new ClassPathResource("23891556799905703.png"));
 
-        javaMailSender.send(msg);
+			javaMailSender.send(msg);
 
-    }
+		}
+
+	}
 
 }

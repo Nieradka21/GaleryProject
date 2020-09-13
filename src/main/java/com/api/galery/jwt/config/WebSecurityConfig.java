@@ -51,7 +51,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity httpSecurity) throws Exception {
 		httpSecurity.csrf().disable()
 // Não cheque essas requisições
-				.authorizeRequests().antMatchers("/auth")
+				.authorizeRequests().antMatchers("/auth","/galery/email")
 				.permitAll().
 // Qualquer outra requisição deve ser checada
 				anyRequest().authenticated().and().exceptionHandling()
