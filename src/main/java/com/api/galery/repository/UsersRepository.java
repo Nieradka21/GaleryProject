@@ -1,19 +1,18 @@
 package com.api.galery.repository;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import org.springframework.transaction.annotation.Transactional;
+
 import com.api.galery.model.Users;
 
-/*@NamedQueries({
-		@NamedQuery(name = "UsersRepository.findByNameAndPass", 
-				query = "SELECT name,pass FROM Users WHERE name = :name and pass = :pass") })*/
 
 public interface UsersRepository extends JpaRepository<Users, Long> {
 
@@ -28,5 +27,10 @@ public interface UsersRepository extends JpaRepository<Users, Long> {
 
 	@Query(value = "SELECT u FROM Users u WHERE u.email = :email")
 	Users findByEmail(@Param("email") String email);
+
+	@Transactional
+	@Modifying
+	@Query(value = "update Users u set u.temp = :temp where u.email = :email")
+	Integer resetPass(@Param("temp") Long number, @Param("email") String email);
 
 }

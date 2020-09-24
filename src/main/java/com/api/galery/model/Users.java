@@ -27,6 +27,8 @@ public class Users implements Serializable {
 	private String pass;
 	@Column(name = "email")
 	private String email;
+	@Column(name = "temp_pass")
+	private Long temp;
 
 	public Long getId() {
 		return id;
@@ -66,6 +68,14 @@ public class Users implements Serializable {
 
 	public void setEmail(String email) {
 		this.email = email;
+	}
+
+	public Long getTemp() {
+		return temp;
+	}
+
+	public void setTemp(Long temp) {
+		this.temp = temp;
 	}
 
 }
