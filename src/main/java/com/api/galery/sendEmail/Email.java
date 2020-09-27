@@ -316,7 +316,7 @@ public class Email {
 					+ "                                  style=\"Margin:0;padding-left:10px;padding-right:10px;padding-top:40px;padding-bottom:40px\">\r\n"
 					+ "                                  <span class=\"es-button-border\"\r\n"
 					+ "                                    style=\"border-style:solid;border-color:#3D5CA3;background:#FFFFFF;border-width:2px;display:inline-block;border-radius:10px;width:auto\"><a\r\n"
-					+ "                                      href=\"http://localhost:4200/code=" + name.getTemp()
+					+ "                                      href=\"http://localhost:4200/reset?code=" + name.getToken()
 					+ "\" class=\"es-button\" target=\"_blank\"\r\n"
 					+ "                                      style=\"mso-style-priority:100 !important;text-decoration:none;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:arial, 'helvetica neue', helvetica, sans-serif;font-size:14px;color:#3D5CA3;border-style:solid;border-color:#FFFFFF;border-width:15px 20px 15px 20px;display:inline-block;background:#FFFFFF;border-radius:10px;font-weight:bold;font-style:normal;line-height:17px;width:auto;text-align:center\">RESET\r\n"
 					+ "                                      PASSWORD</a></span></td>\r\n"

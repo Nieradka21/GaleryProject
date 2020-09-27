@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -17,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Random;
 import javax.mail.MessagingException;
@@ -30,6 +34,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.api.galery.jwt.config.JwtTokenUtil;
+import com.api.galery.jwt.service.JwtUserDetailsService;
+import org.springframework.security.core.userdetails.User;
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -45,6 +51,9 @@ public class UsersResource {
 
 	@Autowired
 	Email email;
+
+	@Autowired
+	private JwtUserDetailsService userDetailsService;
 
 	@Bean
 	public BCryptPasswordEncoder bCryptPasswordEncoder() {
@@ -81,16 +90,32 @@ public class UsersResource {
 		return usersRepository.deleteById(id);
 	}
 
+	@PutMapping("/reset")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Integer resetarSenha(@RequestBody Users users) {
+
+		users.setEmail(JwtTokenUtil.getUsernameFromToken(users.getToken()));
+
+		users.setPass(bCryptPasswordEncoder().encode(users.getPass()));
+
+		return usersRepository.resetPassword(users.getPass(), users.getEmail());
+
+	}
+
 	@PostMapping("/email")
 	@Produces(MediaType.APPLICATION_JSON)
-	public String esqueciSenha(@RequestBody Users users) {
+	public void esqueciSenha(@RequestBody Users users) {
 		try {
-			Random random = new Random();
-			Long number = (long) random.ints(100000000, 999999999).findFirst().getAsInt();
+			// Random random = new Random();
+			// Long number = (long) random.ints(100000000,
+			// 999999999).findFirst().getAsInt();
+			Users us = usersRepository.findByEmail(users.getEmail());
 
-			usersRepository.resetPass(number, users.getEmail());
+			final UserDetails userDetails = new User(us.getEmail(), us.getPass(), new ArrayList<>());
+			String token = JwtTokenUtil.generateToken(userDetails);
+			usersRepository.gerarCodigo(token, us.getEmail());
 
-			email.sendEmailWithAttachment(users.getEmail());
+			email.sendEmailWithAttachment(us.getEmail());
 		} catch (MessagingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -98,16 +123,16 @@ public class UsersResource {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return "Enviado com sucesso";
+		// return ResponseEntity.ok("ok");
 		// usersRepository.findByNameAndPassUsers(users.getName(), users.getPass());
 	}
 
 	@PostMapping("/logado")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Boolean teste(@RequestBody String token) throws JsonMappingException, JsonProcessingException {
+	public Date teste(@RequestBody String token) throws JsonMappingException, JsonProcessingException {
 		HashMap<String, Object> result = new ObjectMapper().readValue(token, HashMap.class);
 
-		return JwtTokenUtil.isTokenExpired(result.get("token").toString());
+		return JwtTokenUtil.getExpirationDateFromToken(result.get("token").toString());
 
 	}
 

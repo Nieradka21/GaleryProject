@@ -17,8 +17,6 @@ public class JwtRequest implements Serializable {
 		this.setPass(pass);
 	}
 
-	
-
 	public String getEmail() {
 		return email;
 	}
@@ -34,7 +32,5 @@ public class JwtRequest implements Serializable {
 	public void setPass(String pass) {
 		this.pass = pass;
 	}
-
-	
 
 }

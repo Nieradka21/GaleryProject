@@ -13,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.api.galery.model.Users;
 
-
 public interface UsersRepository extends JpaRepository<Users, Long> {
 
 	Users findById(long id);
@@ -30,7 +29,12 @@ public interface UsersRepository extends JpaRepository<Users, Long> {
 
 	@Transactional
 	@Modifying
-	@Query(value = "update Users u set u.temp = :temp where u.email = :email")
-	Integer resetPass(@Param("temp") Long number, @Param("email") String email);
+	@Query(value = "update Users u set u.token = :token where u.email = :email")
+	Integer gerarCodigo(@Param("token") String temp, @Param("email") String email);
+
+	@Transactional
+	@Modifying
+	@Query(value = "update Users u set u.pass = :pass where u.email = :email")
+	Integer resetPassword(@Param("pass") String pass, @Param("email") String email);
 
 }
